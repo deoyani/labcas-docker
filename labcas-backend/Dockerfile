@@ -12,6 +12,8 @@ RUN apt-get update && \
     wget \
     netcat-openbsd \
     git \
+    vim \
+    ldap-utils \
     maven && \
     rm -rf /var/lib/apt/lists/*
 
@@ -38,6 +40,11 @@ RUN keytool -genkey -alias tomcat -keyalg RSA -keysize 2048 -keystore /etc/ca-ce
 # Copy configuration files
 COPY labcas.properties /root/
 COPY server.xml $LABCAS_HOME/apache-tomcat/conf/
+#COPY web.xml $LABCAS_HOME/apache-tomcat/conf/
+
+# Copy keys
+RUN mkdir -p /root/certs
+COPY hostkey.pem /root/certs/hostkey.pem
 
 # Ensure that the start.sh script exists and is in the correct location
 RUN sed -i '/solr start/s/$/ -force/' /tmp/labcas/start.sh

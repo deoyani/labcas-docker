@@ -6,6 +6,7 @@ LABEL description="LabCAS UI service."
 # Install git
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    vim \
     git && \
     rm -rf /var/lib/apt/lists/*
 
