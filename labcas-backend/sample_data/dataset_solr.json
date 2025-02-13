@@ -1,0 +1,20 @@
+[
+    {
+        "id": "test_collection/dataset",
+        "DatasetId": "test_collection/dataset",
+        "DatasetName": "test_collection",
+        "DatasetVersion": 1,
+        "Study": "Test Study",
+        "AssayType": "Flow",
+        "AlgorithmID": "algorithm",
+        "DataProcessingLevel": "Derived",
+        "DataFormat": "FCS",
+        "labcas_node_type": "datasets",
+        "CollectionName": "Test Collection Name",
+        "CollectionId": "test_collection",
+        "OwnerPrincipal": [
+            "cn=*,ou=groups,o=TEST",
+            "cn=Flow,ou=TEST"
+        ]
+    }
+]

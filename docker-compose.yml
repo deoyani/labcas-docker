@@ -51,7 +51,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      #- "443:80"    # Map host's 443 to container's 80
     volumes:
       - ./labcas-ui/environment.cfg:/usr/local/apache2/htdocs/labcas-ui/assets/conf/environment.cfg
     networks:

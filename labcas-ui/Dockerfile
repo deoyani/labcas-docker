@@ -18,6 +18,8 @@ RUN mkdir -p /usr/local/apache2/htdocs/labcas-ui/assets/conf
 
 # Copy environment configuration
 COPY environment.cfg /usr/local/apache2/htdocs/labcas-ui/assets/conf/
+COPY labcas-proxy.conf /usr/local/apache2/conf/extra/
+RUN echo 'Include conf/extra/labcas-proxy.conf' >> /usr/local/apache2/conf/httpd.conf  
 
 # Create a simple HTML test page
 RUN echo "<html><body><h1>Hello, World2</h1></body></html>" > /usr/local/apache2/htdocs/test.html

@@ -40,7 +40,6 @@ RUN keytool -genkey -alias tomcat -keyalg RSA -keysize 2048 -keystore /etc/ca-ce
 # Copy configuration files
 COPY labcas.properties /root/
 COPY server.xml $LABCAS_HOME/apache-tomcat/conf/
-#COPY web.xml $LABCAS_HOME/apache-tomcat/conf/
 
 # Copy keys
 RUN mkdir -p /root/certs
