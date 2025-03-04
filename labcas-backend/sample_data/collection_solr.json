@@ -39,8 +39,7 @@
             "Homo sapiens"
         ],
         "OwnerPrincipal": [
-            "cn=*,ou=groups,o=TEST",
-            "cn=Flow,ou=TEST"
+		"cn=Super User,ou=groups,dc=labcas,dc=jpl,dc=nasa,dc=gov"
         ],
         "DOI": [
             "NA"
