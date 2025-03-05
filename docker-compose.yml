@@ -39,7 +39,7 @@ services:
     command: >
       /bin/bash -c "
       sleep 30 &&
-      /tmp/labcas/start.sh &&
+      /tmp/labcas/start.sh && /tmp/labcas/init_solr.sh &&
       tail -f /dev/null
       "
 
