@@ -1,0 +1,11 @@
+dn: uid=test,ou=users,dc=labcas,dc=jpl,dc=nasa,dc=gov
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: test
+sn: Test
+cn: Test User
+displayName: Test User
+userPassword: {SSHA}63t1z0RCn4928yEQocbLghjRK77Ih3OK
+mail: test@example.com
