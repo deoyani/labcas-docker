@@ -13,8 +13,7 @@
         "CollectionName": "Test Collection Name",
         "CollectionId": "test_collection",
         "OwnerPrincipal": [
-            "cn=*,ou=groups,o=TEST",
-            "cn=Flow,ou=TEST"
+		"cn=Super User,ou=groups,dc=labcas,dc=jpl,dc=nasa,dc=gov"
         ]
     }
 ]

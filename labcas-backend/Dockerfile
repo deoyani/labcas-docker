@@ -56,3 +56,8 @@ EXPOSE 8080
 
 # Set entrypoint to start the LabCAS backend services
 CMD ["/tmp/labcas/start.sh"]
+
+COPY init_solr.sh /tmp/labcas/
+COPY sample_data /tmp/labcas/sample_data
+RUN chmod +x /tmp/labcas/init_solr.sh
+CMD ["/bin/bash", "-c", "/tmp/labcas/start.sh && /tmp/labcas/init_solr.sh"]

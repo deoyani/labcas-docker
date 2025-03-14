@@ -4,7 +4,7 @@
         "CollectionId": "test_collection",
         "CollectionName": "Collection Name",
         "DatasetId": "test_collection/dataset",
-        "DatasetName": "test_collection",
+        "DatasetName": "dataset",
         "DatasetVersion": 1,
         "FileName": "testfilename5778.fcs",
         "WorkingGroup": "dataset",
@@ -18,8 +18,7 @@
         "FileDownloadId": "N/A",
         "labcas_node_type": "files",
         "OwnerPrincipal": [
-            "cn=*,ou=groups,o=TEST",
-            "cn=Flow,ou=TEST"
+		"cn=Super User,ou=groups,dc=labcas,dc=jpl,dc=nasa,dc=gov"
         ]
     }
 ]
