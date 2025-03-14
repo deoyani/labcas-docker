@@ -56,5 +56,18 @@ services:
     networks:
       - labcas-net
 
+  mock-auth:
+    build: ./mock-auth
+    container_name: mock-auth
+    depends_on:
+      - labcas-backend
+      - labcas-ui
+    ports:
+      - "3001:3001"
+    networks:
+      - labcas-net
+    # environment:
+    #   - REDIRECT_DEFAULT=http://localhost:80
+
 networks:
   labcas-net:
