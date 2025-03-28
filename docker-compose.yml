@@ -34,6 +34,7 @@ services:
     volumes:
       - ./labcas-backend/labcas.properties:/root/labcas.properties
       - ./labcas-backend/server.xml:/tmp/labcas/apache-tomcat/conf/server.xml
+      - ./docker-volumes/tomcat-logs:/tmp/labcas/apache-tomcat/logs
     networks:
       - labcas-net
     command: >
