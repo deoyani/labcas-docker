@@ -17,8 +17,8 @@ RUN git clone https://github.com/Labcas-NIST/Labcas-ui.git /usr/local/apache2/ht
 RUN mkdir -p /usr/local/apache2/htdocs/labcas-ui/assets/conf
 
 # Copy environment configuration
-COPY environment.cfg /usr/local/apache2/htdocs/labcas-ui/assets/conf/
-COPY labcas-proxy.conf /usr/local/apache2/conf/extra/
+RUN ln -sf /config/labcas-ui/environment.cfg /usr/local/apache2/htdocs/labcas-ui/assets/conf/environment.cfg
+RUN ln -sf /config/labcas-ui/labcas-proxy.conf /usr/local/apache2/conf/extra/labcas-proxy.conf
 RUN echo 'Include conf/extra/labcas-proxy.conf' >> /usr/local/apache2/conf/httpd.conf  
 
 # Create a simple HTML test page
@@ -27,5 +27,6 @@ RUN echo "<html><body><h1>Hello, World2</h1></body></html>" > /usr/local/apache2
 # Expose necessary ports
 EXPOSE 80 443
 
-# Start Apache server
-CMD ["httpd-foreground"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

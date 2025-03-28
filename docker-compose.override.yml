@@ -1,0 +1,13 @@
+version: "3.8"
+
+# This override file adds shared configuration volume mappings without modifying the original docker-compose.yml.
+services:
+  labcas-backend:
+    volumes:
+      - ./shared-config/labcas-backend:/config
+  labcas-ui:
+    volumes:
+      - ./shared-config/labcas-ui:/config/labcas-ui
+  ldap:
+    volumes:
+      - ./shared-config/ldap:/config/ldap
