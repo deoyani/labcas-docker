@@ -1,9 +1,9 @@
 # About this LabCAS docker
 
 This branch for the LabCAS docker system is created to use reverse proxy server, create proper containers connections, logging and data separation. LabCAs System contains following main components
-   LabCAS GUI
-   LabCAS backend
-   LabCAS authentication (LDAP and OktaSAML based)
+   - LabCAS GUI
+   - LabCAS backend
+   - LabCAS authentication (LDAP and OktaSAML based)
 
 In this branch we are creating a docker system which creates a docker network so these components can communicate properly.
 
