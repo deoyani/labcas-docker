@@ -1,6 +1,12 @@
 version: '3.8'
 
 services:
+  labcas-ubuntubase:
+    build:
+      context: ./common/ubuntubase
+    image: labcas-ubuntubase
+    networks:
+      - labcas-net
   ldap:
     build: ./ldap
     container_name: ldap
@@ -18,6 +24,7 @@ services:
       - "1389:1389"
     volumes:
       - ./ldap/custom_ldifs:/container-init.d
+      - ./data/logs/ldap:/var/log/ldap
     networks:
       - labcas-net
 
@@ -31,31 +38,38 @@ services:
     ports:
       - "8080:8080"  # Map the backend service port
       - "8444:8444"  # Map the backend service port
+    expose:
+      - "8080"
+      - "8444"
     volumes:
       - ./labcas-backend/labcas.properties:/root/labcas.properties
       - ./labcas-backend/server.xml:/tmp/labcas/apache-tomcat/conf/server.xml
+      - ./data/logs/labcas-backend:/var/log/labcas-backend
     networks:
       - labcas-net
-    command: >
-      /bin/bash -c "
-      sleep 30 &&
-      /tmp/labcas/start.sh && /tmp/labcas/init_solr.sh &&
-      tail -f /dev/null
-      "
+
+  #   # networks:
+  #   #   - labcas-net
+  #   command: >
+  #     /bin/bash -c "
+  #     sleep 30 &&
+  #     /tmp/labcas/start.sh && /tmp/labcas/init_solr.sh &&
+  #     tail -f /dev/null
+  #     "
 
   labcas-ui:
     build: ./labcas-ui
     container_name: labcas-ui
     depends_on:
+      - labcas-ubuntubase
       - labcas-backend
     ports:
-      - "80:80"
-      - "443:443"
+      - "8081:8081"
     volumes:
       - ./labcas-ui/environment.cfg:/usr/local/apache2/htdocs/labcas-ui/assets/conf/environment.cfg
+       - ./data/logs/labcas-ui:/var/log/labcas-ui
     networks:
       - labcas-net
-
   mock-auth:
     build: ./mock-auth
     container_name: mock-auth
@@ -64,10 +78,43 @@ services:
       - labcas-ui
     ports:
       - "3001:3001"
+    expose:
+      - "3001"
     networks:
       - labcas-net
     # environment:
     #   - REDIRECT_DEFAULT=http://localhost:80
+
+  labcas-proxy:
+      build: ./labcas-proxy
+      volumes:
+        - ./data/logs/nginx/:/var/log/nginx/
+      expose:
+          - "80"
+          - "443"
+          - "8099"
+      ports:
+          - "443:443"
+          - "80:80"
+          - "8099:8099"
+      depends_on:
+        - labcas-ui
+        - labcas-ubuntubase
+        - labcas-backend
+      links:
+        - labcas-ui:labcas-ui
+        - labcas-backend:labcas-backend
+      image: labcas-proxy
+      container_name: labcas-proxy
+      restart: "on-failure:5"
+      security_opt: [ no-new-privileges ]
+      pids_limit: 50
+      cap_drop:
+            - NET_ADMIN
+            - SYS_ADMIN
+            - SYS_MODULE
+      networks:
+       - labcas-net
 
 networks:
   labcas-net:

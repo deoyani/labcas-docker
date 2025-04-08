@@ -1,1 +1,5 @@
 *.swp
+*/certs/*
+*/data/*
+.DS_Store
+data/*
