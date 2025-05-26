@@ -124,3 +124,31 @@ Contributions are welcome! Please fork the repository, make your changes, and su
 ## License
 
 The project is licensed under the Apache version 2 license.
+
+## Airflow and Publish Integration
+
+This setup includes optional services for running Apache Airflow and the LabCAS `publish` tool. The `airflow` container executes DAGs stored in `./airflow/dags` and mounts `./airflow/scripts` for helper scripts. A simple example DAG `parse_and_publish` parses an Excel file and then invokes the `publish` command to push metadata to the LabCAS backend.
+
+The `publish` container is built from `ghcr.io/jpl-labcas/publish` and communicates with the backend service on the internal Docker network.
+
+To start all services, run:
+
+```bash
+docker-compose up --build
+```
+
+Airflow will be available on port `8081` and can be used to orchestrate metadata publishing workflows.
+
+### Viewing Logs
+
+Each container writes its output to Docker's logging system. If a workflow fails or a service does not start correctly, you can inspect the logs with `docker logs`:
+
+```bash
+# Example: view Airflow logs
+docker logs airflow
+
+# Example: view publish container logs
+docker logs labcas-publish
+```
+
+Airflow task logs are persisted to the `airflow/logs` directory on the host, so you can also browse those files directly.

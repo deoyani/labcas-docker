@@ -11,3 +11,9 @@ services:
   ldap:
     volumes:
       - ./shared-config/ldap:/config/ldap
+  publish:
+    volumes:
+      - ./shared-config/publish:/config/publish
+  airflow:
+    volumes:
+      - ./shared-config/airflow:/config/airflow

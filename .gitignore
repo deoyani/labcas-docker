@@ -1,2 +1,5 @@
 *.swp
 docker-volumes/*
+data/
+airflow/logs/*
+!airflow/logs/.gitkeep
