@@ -6,6 +6,7 @@ This repository provides a Dockerized setup for LabCAS (Laboratory Catalog and A
 
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
+- [Setup](#setup)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
@@ -25,6 +26,14 @@ Before you begin, ensure you have the following installed:
 - [Git](https://git-scm.com/)
 - [Bash](https://www.gnu.org/software/bash/) (for running the provided script)
 - A valid LabCAS username and password for accessing the resources
+
+## Setup
+
+Run the helper script to install Docker, Docker Compose, and Python dependencies:
+
+```bash
+./setup_dependencies.sh
+```
 
 ## Installation
 
