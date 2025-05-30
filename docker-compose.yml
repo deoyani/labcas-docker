@@ -71,7 +71,10 @@ services:
     #   - REDIRECT_DEFAULT=http://localhost:80
 
   publish:
-    image: ghcr.io/jpl-labcas/publish:latest
+    build:
+      context: ./publish
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
     container_name: labcas-publish
     depends_on:
       - labcas-backend
@@ -87,22 +90,27 @@ services:
       - labcas-net
 
   airflow:
-    build: ./airflow
+    build:
+      context: ./airflow
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
     container_name: airflow
     depends_on:
       - labcas-backend
     environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/scripts:/opt/airflow/scripts
       - ./data:/data
       - ./airflow/logs:/opt/airflow/logs
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8081:8080"
     networks:
       - labcas-net
+    command: standalone
     logging:
       driver: json-file
       options:
