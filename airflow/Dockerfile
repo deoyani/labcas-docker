@@ -4,6 +4,9 @@ USER root
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 ARG GITHUB_TOKEN
+RUN if [ -z "$GITHUB_TOKEN" ]; then \
+      echo "GITHUB_TOKEN build arg is required" >&2; exit 1; \
+    fi
 RUN git clone https://${GITHUB_TOKEN}@github.com/jpl-labcas/publish.git /opt/publish
 
 RUN if [ -f /opt/publish/setup.py ]; then \
@@ -13,4 +16,4 @@ RUN if [ -f /opt/publish/setup.py ]; then \
     fi
 
 USER airflow
-RUN pip install --no-cache-dir pandas openpyxl docker
+RUN pip install --no-cache-dir pandas openpyxl docker psycopg2-binary

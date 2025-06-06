@@ -35,6 +35,23 @@ Run the helper script to install Docker, Docker Compose, and Python dependencies
 ./setup_dependencies.sh
 ```
 
+### Access to Private GitHub Repositories
+
+The Airflow and publish containers require access to the private
+`jpl-labcas/publish` repository. Set a personal access token in the
+`GITHUB_TOKEN` environment variable before building the images:
+
+```bash
+export GITHUB_TOKEN=<your_token>
+```
+
+If your token also allows access to GitHub Container Registry, log in so
+the `publish` image can be pulled or built:
+
+```bash
+echo "$GITHUB_TOKEN" | docker login ghcr.io -u <github_username> --password-stdin
+```
+
 ## Installation
 
 1. **Clone the Repository**
@@ -54,6 +71,9 @@ To build and run the LabCAS Docker environment, simply run:
 ```bash
 docker-compose up --build
 ```
+
+Make sure the `GITHUB_TOKEN` variable is set in your environment so that the
+private `publish` repository can be cloned during the build.
 
 If you have already run previous builds and re-running, recommend shutting down previous environments first:
 
@@ -129,6 +149,8 @@ The project is licensed under the Apache version 2 license.
 
 This setup includes optional services for running Apache Airflow and the LabCAS `publish` tool. The `airflow` container executes DAGs stored in `./airflow/dags` and mounts `./airflow/scripts` for helper scripts. A simple example DAG `parse_and_publish` parses an Excel file and then invokes the `publish` command to push metadata to the LabCAS backend.
 
+The Airflow service now runs with `LocalExecutor` and a PostgreSQL database, enabling Docker-based tasks to run properly and ensuring logs are captured for troubleshooting. A new `postgres` container is included in the compose file and Airflow connects to it using the `AIRFLOW__DATABASE__SQL_ALCHEMY_CONN` environment variable.
+
 The `publish` container is built from `ghcr.io/jpl-labcas/publish` and communicates with the backend service on the internal Docker network.
 
 To start all services, run:
@@ -138,6 +160,23 @@ docker-compose up --build
 ```
 
 Airflow will be available on port `8081` and can be used to orchestrate metadata publishing workflows.
+
+### Testing the `parse_and_publish` DAG
+
+1. Place the Excel file you want to ingest at `./data/input.xlsx`.
+2. Adjust credentials for the publish tool in `shared-config/publish/publish.cfg` if necessary. This file is mounted into the publish container using `docker-compose.override.yml`.
+3. Start the environment with `docker-compose up --build`.
+
+   Ensure the `GITHUB_TOKEN` environment variable is exported so the
+   `publish` image can be built.
+
+4. Trigger the DAG from the Airflow UI or run the following command:
+
+   ```bash
+   docker exec airflow airflow dags trigger parse_and_publish
+   ```
+
+Task logs for the publish step will be available in the Airflow interface and in `./airflow/logs` on the host.
 
 ### Viewing Logs
 
