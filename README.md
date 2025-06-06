@@ -164,13 +164,19 @@ Airflow will be available on port `8081` and can be used to orchestrate metadata
 ### Testing the `parse_and_publish` DAG
 
 1. Place the Excel file you want to ingest at `./data/input.xlsx`.
-2. Adjust credentials for the publish tool in `shared-config/publish/publish.cfg` if necessary. This file is mounted into the publish container using `docker-compose.override.yml`.
-3. Start the environment with `docker-compose up --build`.
+2. Export `HOST_DATA_PATH` with the absolute path to the project `data` directory so Airflow can mount it when running Docker tasks:
+
+   ```bash
+   export HOST_DATA_PATH=$(pwd)/data
+   ```
+
+3. Adjust credentials for the publish tool in `shared-config/publish/publish.cfg` if necessary. This file is mounted into the publish container using `docker-compose.override.yml`.
+4. Start the environment with `docker-compose up --build`.
 
    Ensure the `GITHUB_TOKEN` environment variable is exported so the
    `publish` image can be built.
 
-4. Trigger the DAG from the Airflow UI or run the following command:
+5. Trigger the DAG from the Airflow UI or run the following command:
 
    ```bash
    docker exec airflow airflow dags trigger parse_and_publish

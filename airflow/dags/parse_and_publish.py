@@ -3,7 +3,13 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.providers.docker.operators.docker import DockerOperator
 from docker.types import Mount
+import os
 import logging
+
+# Host path for the data directory. Defaults to '/data' if the environment
+# variable is not set. This allows running the DAG without creating a global
+# '/data' directory on the host by specifying HOST_DATA_PATH=<project>/data
+# when starting Airflow.
 
 with DAG(
     dag_id="parse_and_publish",
@@ -17,6 +23,7 @@ with DAG(
         bash_command="set -euxo pipefail; ls -al /data; python /opt/airflow/scripts/parse_excel.py /data/input.xlsx /data/output.json; cat /data/output.json",
     )
 
+    host_data = os.environ.get("HOST_DATA_PATH", os.path.abspath("/data"))
     publish_task = DockerOperator(
         task_id="publish_metadata",
         image="labcas-docker-publish:latest",
@@ -27,7 +34,7 @@ with DAG(
             "steps": "publish",
             "LOG_LEVEL": "DEBUG",
         },
-        mounts=[Mount(source="/data", target="/data", type="bind")],
+        mounts=[Mount(source=host_data, target="/data", type="bind")],
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
         tty=True,
