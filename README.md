@@ -39,14 +39,15 @@ Run the helper script to install Docker, Docker Compose, and Python dependencies
 
 The Airflow and publish containers require access to the private
 `jpl-labcas/publish` repository. Set a personal access token in the
-`GITHUB_TOKEN` environment variable before building the images:
+`GITHUB_TOKEN` environment variable before building or pulling the
+images:
 
 ```bash
 export GITHUB_TOKEN=<your_token>
 ```
 
 If your token also allows access to GitHub Container Registry, log in so
-the `publish` image can be pulled or built:
+the `publish` image can be pulled:
 
 ```bash
 echo "$GITHUB_TOKEN" | docker login ghcr.io -u <github_username> --password-stdin
@@ -160,6 +161,49 @@ docker-compose up --build
 ```
 
 Airflow will be available on port `8081` and can be used to orchestrate metadata publishing workflows.
+
+### Building and Running `labcas-publish`
+
+The publishing tool can also be executed on its own.  A container image is
+provided in the private registry and can be built locally with
+
+```bash
+docker buildx create --name labcas --use               # one time
+docker buildx build --tag labcas-publish:latest \
+  --file docker/Dockerfile --load .
+```
+
+To run the container you must supply a few environment variables and mount the
+metadata and data directories:
+
+```bash
+docker container run --rm \
+  --env consortium=EDRN \
+  --env collection=MyCollection \
+  --env solr=https://host.docker.internal:8984/solr \
+  --volume $HOST_METADATA_PATH:/mnt/metadata:ro \
+  --volume $HOST_DATA_PATH:/mnt/data \
+  labcas-publish
+```
+
+Supported variables are shown below with their defaults:
+
+| Variable            | Purpose                                             | Default                                   |
+|---------------------|-----------------------------------------------------|-------------------------------------------|
+| `solr`              | URL to LabCAS Solr                                  | `https://host.docker.internal:8984/solr` |
+| `consortium`        | Science organization (EDRN, MCL, or NIST)           | `EDRN`                                    |
+| `collection`        | Name of the collection to publish                   | *(none)*                                  |
+| `collection_subset` | Single dataset within the collection                | *(optional)*                              |
+| `publish_id`        | Publication ID to re-use                            | *(optional)*                              |
+| `steps`             | Comma-separated publication steps                   | `headers,hash,crawl,updown,compare,publish,thumbnails` |
+
+Two volumes must be provided: the metadata configuration directory mounted to
+`/mnt/metadata` (read-only is fine) and the LabCAS data directory mounted to
+`/mnt/data` with write access.
+
+When using `docker-compose`, define the above variables in your shell
+environment or an `.env` file so that the `publish` service receives the
+correct configuration.
 
 ### Testing the `parse_and_publish` DAG
 
