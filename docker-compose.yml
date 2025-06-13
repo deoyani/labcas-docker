@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   ldap:
     build: ./ldap
@@ -43,7 +41,7 @@ services:
       /tmp/labcas/start.sh && /tmp/labcas/init_solr.sh &&
       tail -f /dev/null
       "
-
+ 
   labcas-ui:
     build: ./labcas-ui
     container_name: labcas-ui
@@ -71,7 +69,10 @@ services:
     #   - REDIRECT_DEFAULT=http://localhost:80
 
   publish:
-    image: ghcr.io/jpl-labcas/publish:latest
+    build:
+      context: ./publish
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
     container_name: labcas-publish
     depends_on:
       - labcas-backend
@@ -121,6 +122,8 @@ services:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__WEBSERVER__WORKERS=1
+      - AIRFLOW__WEBSERVER__WORKER_TIMEOUT=120
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/scripts:/opt/airflow/scripts

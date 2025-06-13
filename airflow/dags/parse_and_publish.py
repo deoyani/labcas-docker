@@ -24,6 +24,10 @@ with DAG(
     )
 
     host_data = os.environ.get("HOST_DATA_PATH", os.path.abspath("/data"))
+
+    basic_auth_user = os.getenv("BASIC_AUTH_USER", "dliu")
+    basic_auth_pass = os.getenv("BASIC_AUTH_PASS", "secret")
+
     publish_task = DockerOperator(
         task_id="publish_metadata",
         image="labcas-docker-publish:latest",
@@ -33,10 +37,15 @@ with DAG(
         environment={
             "steps": "publish",
             "LOG_LEVEL": "DEBUG",
+            "LABCAS_API_URL": "https://labcas-backend:8444/labcas-backend-data-access-api",
+            "SOLR_URL": "https://localhost:8984",
+            "COLLECTION": "test_collection",
+            "BASIC_AUTH_USER": basic_auth_user,
+            "BASIC_AUTH_PASS": basic_auth_pass,
         },
         mounts=[Mount(source=host_data, target="/data", type="bind")],
         docker_url="unix://var/run/docker.sock",
-        network_mode="bridge",
+        network_mode="labcas-docker_default",
         tty=True,
     )
 

@@ -1,13 +1,19 @@
-# The publish tool is now distributed as a container image.  Simply
-# pull the upstream image rather than cloning the repository at build
-# time.  This avoids host dependencies and keeps secrets out of the
-# Docker build context.
+# Build the publish tool locally instead of pulling the upstream image.
+# This Dockerfile should be updated with the actual build steps for the publish tool.
 
-FROM ghcr.io/jpl-labcas/publish:latest
+FROM python:3.10-slim
 
-##
-## No additional commands are required here.  The upstream image
-## provides the ``publish`` entrypoint directly.  Any environment
-## variables defined at run time will be passed through.
-##
+ARG GITHUB_TOKEN
+RUN apt-get update && apt-get install -y git gcc libglib2.0-dev libxml2-dev libxslt1-dev libjpeg-dev zlib1g-dev libopenjp2-7-dev libtiff-dev && rm -rf /var/lib/apt/lists/*
+
+# clone the Publish repo (token optional for private repos)
+RUN git clone https://$GITHUB_TOKEN@github.com/jpl-labcas/publish.git /opt/publish
+WORKDIR /opt/publish
+
+# install Publish and its deps
+RUN if [ -f setup.py ]; then pip install . ; \
+    elif [ -f requirements.txt ]; then pip install -r requirements.txt ; fi
+
+ENTRYPOINT ["/usr/local/bin/python3"]
+CMD ["publishing_pipeline.py"]
 
