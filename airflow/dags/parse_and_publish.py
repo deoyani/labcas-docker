@@ -27,19 +27,25 @@ with DAG(
 
     basic_auth_user = os.getenv("BASIC_AUTH_USER", "dliu")
     basic_auth_pass = os.getenv("BASIC_AUTH_PASS", "secret")
-
+ 
     publish_task = DockerOperator(
         task_id="publish_metadata",
         image="labcas-docker-publish:latest",
         api_version="auto",
         auto_remove=True,
         command="",
+        # Pass through host-level publish parameters or fallback defaults
         environment={
-            "steps": "publish",
+            "steps": os.getenv("PUBLISH_STEPS", "publish"),
             "LOG_LEVEL": "DEBUG",
             "LABCAS_API_URL": "https://labcas-backend:8444/labcas-backend-data-access-api",
             "SOLR_URL": "https://localhost:8984",
-            "COLLECTION": "test_collection",
+            # publish-specific identifiers
+            "CONSORTIUM": os.getenv("PUBLISH_CONSORTIUM", "EDRN"),
+            "COLLECTION": os.getenv("PUBLISH_COLLECTION", "test_collection"),
+            "COLLECTION_SUBSET": os.getenv("PUBLISH_COLLECTION_SUBSET", ""),
+            "PUBLISH_ID": os.getenv("PUBLISH_ID", ""),
+            # auth
             "BASIC_AUTH_USER": basic_auth_user,
             "BASIC_AUTH_PASS": basic_auth_pass,
         },

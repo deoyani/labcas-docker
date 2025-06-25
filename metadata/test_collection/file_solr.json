@@ -1,0 +1,24 @@
+[
+    {
+        "id": "test_collection/dataset/FCSC_WG3-testfilename5778.fcs",
+        "CollectionId": "test_collection",
+        "CollectionName": "Collection Name",
+        "DatasetId": "test_collection/dataset",
+        "DatasetName": "dataset",
+        "DatasetVersion": 1,
+        "FileName": "testfilename5778.fcs",
+        "WorkingGroup": "dataset",
+        "SiteCode": "site-01",
+        "SoftwareCode": "PythonSpyder5",
+        "AlgorithmID": "NormalTransform-1-version23",
+        "DataProcessingLevel": "Derived",
+        "DataFormat": "FCS",
+        "FileType": "flow",
+        "FileSize": 0,
+        "FileDownloadId": "N/A",
+        "labcas_node_type": "files",
+        "OwnerPrincipal": [
+		"cn=Super User,ou=groups,dc=labcas,dc=jpl,dc=nasa,dc=gov"
+        ]
+    }
+]

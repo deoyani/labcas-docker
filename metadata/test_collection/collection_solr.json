@@ -1,0 +1,66 @@
+[
+    {
+        "id": "test_collection",
+        "labcasId": [
+            "test_collection"
+        ],
+        "name": "test_collection",
+        "labcasName": "test_collection",
+        "CollectionName": "Test Collection Name",
+        "CollectionDescription": "Test Collection Description",
+        "PrincipalContactName": [
+            "Test Test"
+        ],
+        "PrincipalContactEmail": [
+            "test.test@test.test"
+        ],
+        "LeadPoC": [
+            "Test Test"
+        ],
+        "LeadPoCEmail": [
+            "test.test@test.test"
+        ],
+        "DataCustodianName": [
+            "Tester Tester"
+        ],
+        "DataCustodianEmail": [
+            "tester.tester@test.test"
+        ],
+        "Discipline": [
+            "Cytometry"
+        ],
+        "DataCategory": [
+            "Test Study"
+        ],
+        "StudyType": [
+            "Test Study"
+        ],
+        "Organism": [
+            "Homo sapiens"
+        ],
+        "OwnerPrincipal": [
+		"cn=Super User,ou=groups,dc=labcas,dc=jpl,dc=nasa,dc=gov"
+        ],
+        "DOI": [
+            "NA"
+        ],
+        "DOI URL": [
+            "NA"
+        ],
+        "AssociatedConsortium": [
+            "FCS"
+        ],
+        "CoreCapabilities": [
+            "Cell Measurements"
+        ],
+        "PrimaryFocusAreas": [
+            "Focus Area"
+        ],
+        "ParticipatingDivision": [
+            "Division"
+        ],
+        "CollectionId": [
+            "test_collection"
+        ]
+    }
+]

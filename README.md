@@ -241,3 +241,19 @@ docker logs labcas-publish
 ```
 
 Airflow task logs are persisted to the `airflow/logs` directory on the host, so you can also browse those files directly.
+
+## Airflow Helper Script for Task States
+
+To avoid errors when checking task states for DAG runs with run IDs containing prefixes (e.g., `manual__`), use the provided helper script:
+
+```bash
+python3 airflow/scripts/airflow_show_states.py <dag_id> <run_id>
+```
+
+Example:
+
+```bash
+python3 airflow/scripts/airflow_show_states.py parse_and_publish manual__2025-06-14T06:58:02
+```
+
+This script correctly passes the `--run-id` flag to the Airflow CLI, preventing parsing errors.

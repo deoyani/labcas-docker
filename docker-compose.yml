@@ -2,7 +2,6 @@ services:
   ldap:
     build: ./ldap
     container_name: ldap
-      #user: root
     environment:
       - LDAP_ROOT=dc=labcas,dc=jpl,dc=nasa,dc=gov
       - LDAP_ADMIN_USERNAME=admin
@@ -11,9 +10,14 @@ services:
       - LDAP_DEBUG=true
       - BITNAMI_DEBUG=true
       - LDAP_CUSTOM_LDIF_DIR=/container-init.d
+      - LDAP_ENABLE_TLS=yes
+      - LDAP_TLS_CERT_FILE=/etc/ldap/ssl/ldap-cert.pem
+      - LDAP_TLS_KEY_FILE=/etc/ldap/ssl/ldap-key.pem
+      - LDAP_TLS_CA_FILE=/etc/ldap/ssl/ldap-cert.pem
     ports:
       - "389:389"
       - "1389:1389"
+      - "1636:1636"
     volumes:
       - ./ldap/custom_ldifs:/container-init.d
     networks:
@@ -29,6 +33,7 @@ services:
     ports:
       - "8080:8080"
       - "8444:8444"
+      - "8984:8984"
     volumes:
       - ./labcas-backend/labcas.properties:/root/labcas.properties
       - ./labcas-backend/server.xml:/tmp/labcas/apache-tomcat/conf/server.xml
@@ -77,16 +82,20 @@ services:
     depends_on:
       - labcas-backend
     environment:
-      solr: ${SOLR_URL:-https://host.docker.internal:8984/solr}
-      consortium: ${PUBLISH_CONSORTIUM:-EDRN}
-      collection: ${PUBLISH_COLLECTION}
-      collection_subset: ${PUBLISH_COLLECTION_SUBSET}
-      publish_id: ${PUBLISH_ID}
-      steps: ${PUBLISH_STEPS}
+      - solr=https://labcas-backend:8984/solr
+      - SOLR_URL=https://labcas-backend:8984/solr
+      - consortium=${PUBLISH_CONSORTIUM:-EDRN}
+      - collection=${PUBLISH_COLLECTION}
+      - collection_subset=${PUBLISH_COLLECTION_SUBSET}
+      - publish_id=${PUBLISH_ID}
+      - steps=${PUBLISH_STEPS}
     volumes:
       - ${HOST_METADATA_PATH:-./metadata}:/mnt/metadata:ro
-      - ${HOST_DATA_PATH:-./data}:/mnt/data
+      - ${HOST_DATA_PATH:-./data}:/data
+      #- ${HOST_DATA_PATH:-./data}:/mnt/data
       - ./shared-config/publish:/config/publish
+      # expose dummy labcas-data hierarchy (writable for runtime thumbnails etc.)
+      - ./data/labcas-data:/labcas-data
     logging:
       driver: json-file
       options:
@@ -124,6 +133,8 @@ services:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
       - AIRFLOW__WEBSERVER__WORKERS=1
       - AIRFLOW__WEBSERVER__WORKER_TIMEOUT=120
+      # Absolute host path to project data directory; used by DAG for bind-mount
+      - HOST_DATA_PATH=${HOST_DATA_PATH:-${PWD}/data}
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/scripts:/opt/airflow/scripts
