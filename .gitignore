@@ -16,4 +16,3 @@ __pycache__/
 # Ignore log files and log directories
 *.log
 airflow/logs/
-.env
