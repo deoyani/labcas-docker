@@ -65,18 +65,5 @@ ENV PYTHONPATH=/opt/publish/src
 COPY labcas-ssl-cert.pem /usr/local/share/ca-certificates/labcas-ssl-cert.crt
 RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
 
-# Copy patch_handle_json_error.py into the image
-COPY patch_handle_json_error.py /opt/publish/patch_handle_json_error.py
-
-# Run the patch script to modify publishing_pipeline.py
-RUN python3 /opt/publish/patch_handle_json_error.py
-
-# ------------------------------------------------------------------
-# Strip hard-coded Basophile overrides so environment variables win
-# ------------------------------------------------------------------
-COPY patch_basic_env_override.py /opt/publish/patch_basic_env_override.py
-RUN python3 /opt/publish/patch_basic_env_override.py
-
-# launch pipeline directly
-ENTRYPOINT ["python3", "-u", "/opt/publish/publishing_pipeline.py"]
-CMD []
+# keep container alive by tailing /dev/null
+ENTRYPOINT ["tail", "-f", "/dev/null"]

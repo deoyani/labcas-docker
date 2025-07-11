@@ -14,16 +14,24 @@ USER root
 # Create directories in one step
 RUN mkdir -p /etc/ldap/ssl /root/certs
 
-RUN openssl req -new -x509 -days 365 -nodes -out /etc/ldap/ssl/ldap-cert.pem -keyout /etc/ldap/ssl/ldap-key.pem -subj "/CN=localhost" && \
+RUN openssl req -new -x509 -days 365 -nodes \
+        -out /etc/ldap/ssl/ldap-cert.pem \
+        -keyout /etc/ldap/ssl/ldap-key.pem \
+        -subj "/CN=localhost" && \
     openssl genpkey -algorithm RSA -out /root/certs/hostkey.pem && \
-    openssl req -new -x509 -key /root/certs/hostkey.pem -out /root/certs/hostcert.pem -days 365 -subj "/C=US/ST=CA/L=Pasadena/O=JPL/OU=LabCAS/CN=labcas.jpl.nasa.gov"
+    openssl req -new -x509 -key /root/certs/hostkey.pem \
+        -out /root/certs/hostcert.pem -days 365 \
+        -subj "/C=US/ST=CA/L=Pasadena/O=JPL/OU=LabCAS/CN=labcas.jpl.nasa.gov" && \
+    # Allow slapd (UID 1001) to read the TLS key and cert
+    chown 1001:0 /etc/ldap/ssl/ldap-key.pem /etc/ldap/ssl/ldap-cert.pem && \
+    chmod 600 /etc/ldap/ssl/ldap-key.pem
 
 
-# Create symlink for ldap configuration from mounted shared config
-RUN ln -sf /config/ldap /tmp/ldap
+# Copy ldap setup scripts
+COPY ldap /tmp/ldap
 
 # Make ldap setup script executable
-# Permission changes for init_ldap.sh are now handled in the entrypoint script.
+RUN chmod +x /tmp/ldap/init_ldap.sh
 
 # Switch back to non-root user
 #USER slapd
