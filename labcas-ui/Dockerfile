@@ -36,7 +36,7 @@
 # ENTRYPOINT ["/app/scripts/start_httpd.sh"]
 
 
-FROM labcas-ubuntubase
+FROM edrndocker/labcas-ubuntubase
 RUN apt update 
 RUN apt install -y apache2 
 RUN apt install -y apache2-utils 
