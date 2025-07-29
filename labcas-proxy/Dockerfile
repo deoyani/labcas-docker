@@ -1,4 +1,4 @@
-FROM labcas-ubuntubase
+FROM edrndocker/labcas-ubuntubase
 
 ARG installdir=/app/pdr/nerdm
 # Define mountable directories.

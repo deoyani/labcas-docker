@@ -1,12 +1,4 @@
-version: '3.8'
-
 services:
-  labcas-ubuntubase:
-    build:
-      context: ./common/ubuntubase
-    image: labcas-ubuntubase
-    networks:
-      - labcas-net
   ldap:
     build: ./ldap
     container_name: ldap
@@ -62,7 +54,6 @@ services:
     build: ./labcas-ui
     container_name: labcas-ui
     depends_on:
-      - labcas-ubuntubase
       - labcas-backend
     ports:
       - "8081:8081"
@@ -101,7 +92,6 @@ services:
           - "8099:8099"
       depends_on:
         - labcas-ui
-        - labcas-ubuntubase
         - labcas-backend
       links:
         - labcas-ui:labcas-ui
