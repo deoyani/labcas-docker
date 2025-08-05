@@ -14,9 +14,17 @@ USER root
 # Create directories in one step
 RUN mkdir -p /etc/ldap/ssl /root/certs
 
-RUN openssl req -new -x509 -days 365 -nodes -out /etc/ldap/ssl/ldap-cert.pem -keyout /etc/ldap/ssl/ldap-key.pem -subj "/CN=localhost" && \
+RUN openssl req -new -x509 -days 365 -nodes \
+        -out /etc/ldap/ssl/ldap-cert.pem \
+        -keyout /etc/ldap/ssl/ldap-key.pem \
+        -subj "/CN=localhost" && \
     openssl genpkey -algorithm RSA -out /root/certs/hostkey.pem && \
-    openssl req -new -x509 -key /root/certs/hostkey.pem -out /root/certs/hostcert.pem -days 365 -subj "/C=US/ST=CA/L=Pasadena/O=JPL/OU=LabCAS/CN=labcas.jpl.nasa.gov"
+    openssl req -new -x509 -key /root/certs/hostkey.pem \
+        -out /root/certs/hostcert.pem -days 365 \
+        -subj "/C=US/ST=CA/L=Pasadena/O=JPL/OU=LabCAS/CN=labcas.jpl.nasa.gov" && \
+    # Allow slapd (UID 1001) to read the TLS key and cert
+    chown 1001:0 /etc/ldap/ssl/ldap-key.pem /etc/ldap/ssl/ldap-cert.pem && \
+    chmod 600 /etc/ldap/ssl/ldap-key.pem
 
 
 # Copy ldap setup scripts

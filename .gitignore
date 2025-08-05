@@ -1,1 +1,20 @@
 *.swp
+.env
+*/certs/*
+*/data/*
+.DS_Store
+data/staging/
+data/logs/
+data/labcas-data/labcas-backend/generated_metadata/
+
+airflow/logs/
+labcas-proxy/cacerts/
+labcas-proxy/certs/
+airflow/dags/__pycache__/
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore log files and log directories
+*.log
+airflow/logs/

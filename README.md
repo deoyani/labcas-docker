@@ -69,20 +69,6 @@ If you get an error that a previous Docker container still exists, run the follo
 docker rm [9c*** container ID]
 ```
 
-### CORS Issue
-You might encounter CORS issues because the LabCAS backend web service is currently hosted on port 8444 while the UI is on port 80. A future release will resolve this by changing the UI to port 443 and set up a reverse proxy on the LabCAS backend.
-
-For continued testing, if you’re using a MacBook, you can bypass CORS issues by running Chrome without CORS checks using the following command:
-```bash
-open -na "Google Chrome" --args --disable-web-security --user-data-dir="/tmp/chrome_dev"
-```
-
-### Disabling Certificate Checks (Temporary)
-Because the SSL certificates are not yet set up, please follow the steps below to disable certificate checks for the LabCAS backend service:
-1.	Open Chrome as described in step 4 (with --disable-web-security).
-2.	Navigate to: https://3.80.56.196:8444/labcas-backend-data-access-api/auth
-3.	Click “Proceed to [your_ip_address]” to bypass the certificate warning.
-
 ## Configuration
 
 ### Configuration Change: ui/environment.cfg

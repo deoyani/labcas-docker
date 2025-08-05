@@ -37,9 +37,9 @@ RUN if ! keytool -list -alias solr-ssl -keystore /tmp/labcas/etc/solr-ssl.keysto
 RUN keytool -genkey -alias tomcat -keyalg RSA -keysize 2048 -keystore /etc/ca-certificates/keystore.jks \
     -storepass secret -keypass secret -dname "CN=David, OU=JPL, O=JPL, L=Pasadena, ST=CA, C=US"
 
-# Copy configuration files
-COPY labcas.properties /root/
-COPY server.xml $LABCAS_HOME/apache-tomcat/conf/
+# Setup configuration: create symlinks from mounted shared configurations
+RUN ln -sf /config/labcas.properties /root/labcas.properties && \
+    ln -sf /config/server.xml $LABCAS_HOME/apache-tomcat/conf/server.xml
 
 # Copy keys
 RUN mkdir -p /root/certs
@@ -54,10 +54,10 @@ RUN chmod +x /tmp/labcas/start.sh
 # Expose necessary ports
 EXPOSE 8080
 
-# Set entrypoint to start the LabCAS backend services
-CMD ["/tmp/labcas/start.sh"]
-
 COPY init_solr.sh /tmp/labcas/
 COPY sample_data /tmp/labcas/sample_data
 RUN chmod +x /tmp/labcas/init_solr.sh
-CMD ["/bin/bash", "-c", "/tmp/labcas/start.sh && /tmp/labcas/init_solr.sh"]
+# Set entrypoint to start the LabCAS backend services
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
